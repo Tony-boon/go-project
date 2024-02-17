@@ -7,4 +7,6 @@ func main() {
 	fmt.Printf("str: %v\n", str)
 	cc := 12
 	fmt.Printf("cc: %v\n", cc)
+	hh := "kkkk"
+	fmt.Printf("hh: %v\n", hh)
 }
