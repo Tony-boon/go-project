@@ -1,0 +1,71 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # 或其他分支
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+
+      - name: Build
+        run: |
+          export CGO_ENABLED=0
+          export GOOS=linux
+          export GOARCH=amd64
+          go build -o main ./main.go
+          tar czf main.tar.gz main
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: main
+          path: main.tar.gz
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: main
+
+      - name: Install SSH client
+        run: sudo apt-get install -y openssh-client
+
+      - name: Deploy to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          USERNAME: ${{ secrets.USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+          scp main.tar.gz $USERNAME@$SERVER_IP:/tmp
+          ssh $USERNAME@$SERVER_IP 'bash -s' <<-'EOF'
+            cd /data/www/jyy-admin-v2/server/
+            if [ -f main.bak ]; then
+              rm main.bak
+            fi
+            if [ -f main ]; then
+              mv main main.bak
+            fi
+            tar xzf /tmp/main.tar.gz -C /data/www/jyy-admin-v2/server/
+            chmod +x /data/www/jyy-admin-v2/server/main
+            supervisorctl restart jyy-admin-v2:*
+          EOF
