@@ -50,6 +50,8 @@ jobs:
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           USERNAME: ${{ secrets.USERNAME }}
+          echo "Server IP: $SERVER_IP"
+          echo "Username: $USERNAME"
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
