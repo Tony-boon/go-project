@@ -48,8 +48,8 @@ jobs:
 
       - name: Deploy to server
         env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          USERNAME: ${{ secrets.USERNAME }}
+          SERVER_IP: 8.147.171.230
+          USERNAME: root
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           echo "Server IP: $SERVER_IP"
