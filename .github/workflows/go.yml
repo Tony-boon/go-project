@@ -60,7 +60,7 @@ jobs:
           ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
           scp main.tar.gz $USERNAME@$SERVER_IP:/tmp
           ssh $USERNAME@$SERVER_IP 'bash -s' <<-'EOF'
-            cd /data/www/jyy-admin-v2/server/
+            cd /home/
             if [ -f main.bak ]; then
               rm main.bak
             fi
