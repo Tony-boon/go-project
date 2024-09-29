@@ -50,17 +50,20 @@ jobs:
         env:
           SERVER_IP: 38.147.171.230
           USERNAME: root
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          echo "Server IP: $SERVER_IP"
-          echo "Username: $USERNAME"
-          ssh -i ~/.ssh/id_rsa $USERNAME@$SERVER_IP "echo 'Connection successful'"
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+
+          # 测试与服务器的连接
+          ssh -i ~/.ssh/id_rsa $USERNAME@$SERVER_IP "echo 'Connection successful'"
+
+          # 如果上面的连接测试成功，继续后续步骤
           scp main.tar.gz $USERNAME@$SERVER_IP:/tmp
           ssh $USERNAME@$SERVER_IP 'bash -s' <<-'EOF'
+            set -e
             cd /home/
             if [ -f main.bak ]; then
               rm main.bak
