@@ -50,7 +50,7 @@ jobs:
         env:
           SERVER_IP: 38.147.171.230
           USERNAME: root
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDHivBcH5PJWSqumJm8F/tpciOPPFxGfw53B8ztHEe/S0O+hogh5NDrbVpx/llwLlI79bQv78ekhvYtTyY6mUW+gcZMj63i3nEARqQ3P9KDEi6AwjAimJQDPiIBQcNt/paU/AC98FaF2QbaPBa7j9orts/fp8KqSnkYwSn2Z+ESKuMy7vNqGQztvXODrv1SVzwTHzvsYQIuDROzlTjpkOp4ZUdZ6SLpaG8SJis4uCR4Qy48on/d4bty/3fnbElpbot4WRAH05ON7TYlqVJh2UiTXoTc1MZXJdasyr2pN2UTOTfucRd3DCRfFfSFwAIVfOhLEH5AYxfDiJVWOWzYlZ4ZwmuS48oaakBNQZBuR1Xu2djz2bJmdQq/PIUWmDh7JLq1tUCoRYTduWIDZDPpeSxeA34wcTxkngQzyjozQarruOxcSuy9DhWDaaS3KdWcEzkxBfZDfDLqC7HOX27xImgEFh3F6nQdFUKMZ9E7vCCOMqu5LWrn80a8iQlFZKH+ESwChqV5/sVGTlaKMDULZnPB7gsheX7Xw2cn6e3lrU6PHdYvZgXvgrE44f56QMOPp5TxNDeq8dCzdinSqppQjhe9gmXhVHymIKKvugajR+ZoMRUG6R0AxtgyHs8m0WhMMaExCxcrWQujEkptvQKtbcJwhEkUVBWQJpgQpR8FFFSJaw== admin@DESKTOP-NMEKPFK
         run: |
           echo "Server IP: $SERVER_IP"
           echo "Username: $USERNAME"
