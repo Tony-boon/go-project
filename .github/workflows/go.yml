@@ -75,27 +75,19 @@ jobs:
             expect eof
           "
 
-          # 解压并查看上传的文件1
+          # 解压并查看上传的文件
           expect -c "
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
             send \"$SERVER_PASSWORD\r\"
-            send {\n
-              set -e\n
-              cd /home/\n
-              if [ -f main.bak ]; then\n
-                rm main.bak\n
-              fi\n
-              if [ -f main ]; then\n
-                mv main main.bak\n
-              fi\n
-              tar xzf /tmp/main.tar.gz -C /home/\n
-              ls -l /home/ # Check if the file is there\n
-              if [ ! -f /home/main ]; then\n
-                echo 'Error: main not found after extraction'\n
-              fi\n
-              chmod +x /home/main\n
-              ./main\n
-            }\n
+            send \"set -e\n\"
+            send \"cd /home/\n\"
+            send \"if [ -f main.bak ]; then rm main.bak; fi\n\"
+            send \"if [ -f main ]; then mv main main.bak; fi\n\"
+            send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
+            send \"ls -l /home/ # Check if the file is there\n\"
+            send \"if [ ! -f /home/main ]; then echo 'Error: main not found after extraction'; fi\n\"
+            send \"chmod +x /home/main\n\"
+            send \"./main\n\"
             expect eof
           "
