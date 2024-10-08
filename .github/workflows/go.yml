@@ -45,7 +45,7 @@ jobs:
 
       - name: Install SSH client
         run: sudo apt-get install -y openssh-client
-        
+
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y expect
 
@@ -66,13 +66,16 @@ jobs:
             interact
           "
 
+          # 上传文件到服务器
           expect -c "
+            log_user 1
             spawn scp main.tar.gz $USERNAME@$SERVER_IP:/tmp
             expect \"password:\"
             send \"$SERVER_PASSWORD\r\"
-            interact
+            expect eof
           "
 
+          # 解压并查看上传的文件
           expect -c "
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
@@ -87,8 +90,9 @@ jobs:
             send \"  mv main main.bak\n\"
             send \"fi\n\"
             send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
+            send \"ls -l /home/ # Check if the file is there\n\"
             send \"chmod +x /home/main\n\"
             send \"./main\n\"
             send \"EOF\n\"
-            interact
+            expect eof
           "
