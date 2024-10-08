@@ -75,7 +75,7 @@ jobs:
             expect eof
           "
 
-          # 解压并查看上传的文件
+          # 解压并查看上传的文件1
           expect -c "
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
