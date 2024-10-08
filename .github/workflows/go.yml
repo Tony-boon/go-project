@@ -85,8 +85,8 @@ jobs:
             send \"if [ -f main.bak ]; then rm main.bak; fi\n\"
             send \"if [ -f main ]; then mv main main.bak; fi\n\"
             send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
-            send \"ls -l /home/ # Check if the file is there\n\"
-            expect \"$ \"  # 再次等待提示符，以检查命令执行完成
+            send \"ls -l /home/ && echo 'Extraction complete'\n\"
+            expect \"$ \"  # 确认解压完成并且文件存在
             send \"if [ ! -f /home/main ]; then echo 'Error: main not found after extraction'; fi\n\"
             send \"chmod +x /home/main\n\"
             send \"./main\n\"
