@@ -80,12 +80,13 @@ jobs:
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
             send \"$SERVER_PASSWORD\r\"
-            send \"set -e\n\"
+            expect \"$ \"  # 等待提示符出现
             send \"cd /home/\n\"
             send \"if [ -f main.bak ]; then rm main.bak; fi\n\"
             send \"if [ -f main ]; then mv main main.bak; fi\n\"
             send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
             send \"ls -l /home/ # Check if the file is there\n\"
+            expect \"$ \"  # 再次等待提示符，以检查命令执行完成
             send \"if [ ! -f /home/main ]; then echo 'Error: main not found after extraction'; fi\n\"
             send \"chmod +x /home/main\n\"
             send \"./main\n\"
