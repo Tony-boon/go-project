@@ -80,22 +80,22 @@ jobs:
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
             send \"$SERVER_PASSWORD\r\"
-            send \"bash -s <<'EOF'\n\"
-            send \"set -e\n\"
-            send \"cd /home/\n\"
-            send \"if [ -f main.bak ]; then\n\"
-            send \"  rm main.bak\n\"
-            send \"fi\n\"
-            send \"if [ -f main ]; then\n\"
-            send \"  mv main main.bak\n\"
-            send \"fi\n\"
-            send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
-            send \"ls -l /home/ # Check if the file is there\n\"
-            send \"if [ ! -f /home/main ]; then\n\"
-            send \"  echo 'Error: main not found after extraction'\n\"
-            send \"fi\n\"
-            send \"chmod +x /home/main\n\"
-            send \"./main\n\"
-            send \"EOF\n\"
+            send {\n
+              set -e\n
+              cd /home/\n
+              if [ -f main.bak ]; then\n
+                rm main.bak\n
+              fi\n
+              if [ -f main ]; then\n
+                mv main main.bak\n
+              fi\n
+              tar xzf /tmp/main.tar.gz -C /home/\n
+              ls -l /home/ # Check if the file is there\n
+              if [ ! -f /home/main ]; then\n
+                echo 'Error: main not found after extraction'\n
+              fi\n
+              chmod +x /home/main\n
+              ./main\n
+            }\n
             expect eof
           "
