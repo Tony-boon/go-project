@@ -80,15 +80,29 @@ jobs:
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
             send \"$SERVER_PASSWORD\r\"
-            expect \"$ \"  # 等待提示符出现
+            expect \"$ \"  # 等待提示符
+            
             send \"cd /home/\n\"
+            expect \"$ \"  # 确认目录切换
+            
             send \"if [ -f main.bak ]; then rm main.bak; fi\n\"
+            expect \"$ \"  # 确认备份删除
+            
             send \"if [ -f main ]; then mv main main.bak; fi\n\"
+            expect \"$ \"  # 确认文件重命名
+            
             send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
-            send \"ls -l /home/ && echo 'Extraction complete'\n\"
-            expect \"$ \"  # 确认解压完成并且文件存在
+            expect \"$ \"  # 等待解压完成
+            
+            send \"ls -l /home/\n\"
+            expect \"$ \"  # 列出文件确认
+            
             send \"if [ ! -f /home/main ]; then echo 'Error: main not found after extraction'; fi\n\"
+            expect \"$ \"  # 文件存在性检查
+            
             send \"chmod +x /home/main\n\"
+            expect \"$ \"  # 设置执行权限
+            
             send \"./main\n\"
             expect eof
           "
