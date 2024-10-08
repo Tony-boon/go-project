@@ -77,11 +77,15 @@ jobs:
 
           # 解压并查看上传的文件
           expect -c "
+            spawn scp remote_commands.sh $USERNAME@$SERVER_IP:/tmp
+            expect \"password:\"
+            send \"$SERVER_PASSWORD\r\"
+            expect eof
+
             spawn ssh $USERNAME@$SERVER_IP
             expect \"password:\"
             send \"$SERVER_PASSWORD\r\"
-            expect \"$ \"  # 等待提示符
-            
-            send \"cd /home/ && if [ -f main.bak ]; then rm main.bak; fi && if [ -f main ]; then mv main main.bak; fi && tar xzf /tmp/main.tar.gz -C /home/ && ls -l /home/ && if [ ! -f /home/main ]; then echo 'Error: main not found after extraction'; fi && chmod +x /home/main && ./main\n\"
+            expect \"$ \"
+            send \"bash /tmp/remote_commands.sh\n\"
             expect eof
           "
