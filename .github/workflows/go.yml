@@ -50,28 +50,41 @@ jobs:
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           USERNAME: ${{ secrets.USERNAME }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
 
-          # 测试与服务器的连接
-          ssh -i ~/.ssh/id_rsa $USERNAME@$SERVER_IP "echo 'Connection successful'"
+          # 测试与服务器的连接并部署应用
+          expect -c "
+            spawn ssh $USERNAME@$SERVER_IP \"echo 'Connection successful'\"
+            expect \"password:\"
+            send \"$SERVER_PASSWORD\r\"
+            interact
+          "
 
-          # 如果上面的连接测试成功，继续后续步骤
-          scp main.tar.gz $USERNAME@$SERVER_IP:/tmp
-          ssh $USERNAME@$SERVER_IP 'bash -s' <<-'EOF'
-            set -e
-            cd /home/
-            if [ -f main.bak ]; then
-              rm main.bak
-            fi
-            if [ -f main ]; then
-              mv main main.bak
-            fi
-            tar xzf /tmp/main.tar.gz -C /home/
-            chmod +x /home/main
-            ./main
-          EOF
+          expect -c "
+            spawn scp main.tar.gz $USERNAME@$SERVER_IP:/tmp
+            expect \"password:\"
+            send \"$SERVER_PASSWORD\r\"
+            interact
+          "
+
+          expect -c "
+            spawn ssh $USERNAME@$SERVER_IP
+            expect \"password:\"
+            send \"$SERVER_PASSWORD\r\"
+            send \"bash -s <<'EOF'\n\"
+            send \"set -e\n\"
+            send \"cd /home/\n\"
+            send \"if [ -f main.bak ]; then\n\"
+            send \"  rm main.bak\n\"
+            send \"fi\n\"
+            send \"if [ -f main ]; then\n\"
+            send \"  mv main main.bak\n\"
+            send \"fi\n\"
+            send \"tar xzf /tmp/main.tar.gz -C /home/\n\"
+            send \"chmod +x /home/main\n\"
+            send \"./main\n\"
+            send \"EOF\n\"
+            interact
+          "
