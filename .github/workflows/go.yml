@@ -52,6 +52,7 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
 
           # 测试与服务器的连接并部署应用
