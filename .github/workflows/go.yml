@@ -82,15 +82,6 @@ jobs:
             send \"$SERVER_PASSWORD\r\"
             expect \"$ \"  # 等待提示符
             
-            send \"bash -c '\n\
-              cd /home/ && \n\
-              if [ -f main.bak ]; then rm main.bak; fi && \n\
-              if [ -f main ]; then mv main main.bak; fi && \n\
-              tar xzf /tmp/main.tar.gz -C /home/ && \n\
-              ls -l /home/ && \n\
-              if [ ! -f /home/main ]; then echo \'Error: main not found after extraction\'; fi && \n\
-              chmod +x /home/main && \n\
-              ./main\n\
-            '\n\"
+            send \"cd /home/ && if [ -f main.bak ]; then rm main.bak; fi && if [ -f main ]; then mv main main.bak; fi && tar xzf /tmp/main.tar.gz -C /home/ && ls -l /home/ && if [ ! -f /home/main ]; then echo 'Error: main not found after extraction'; fi && chmod +x /home/main && ./main\n\"
             expect eof
           "
